@@ -1,21 +1,22 @@
-from bufftracker.models import Statistic
+from bufftracker.hardcoded_data import CALL_MAP
+from bufftracker.models import Statistic, NumericalBonus, ModifierType
+
 
 class ScalingFunctions:
-
     @staticmethod
-    def one():
+    def one(cl):
         return 1
 
     @staticmethod
-    def two():
+    def two(cl):
         return 2
 
     @staticmethod
-    def three():
+    def three(cl):
         return 3
 
     @staticmethod
-    def four():
+    def four(cl):
         return 4
 
     @staticmethod
@@ -31,13 +32,33 @@ class ScalingFunctions:
         return cl // 3
 
 
-def get_applicable_bonuses(cl_dictionary):
+def parse(value_id, cl):
+    scaling_function = getattr(ScalingFunctions, CALL_MAP[value_id])
+    return scaling_function(cl)
 
+
+def get_applicable_bonuses(cl_dictionary):
     result = {}
 
     selected_spell_ids = [key for key in cl_dictionary]
 
     statistics = Statistic.objects.all()
+    modifier_type_ids = ModifierType.objects.values("id")
 
     for statistic in statistics:
-        pass
+        applicable = NumericalBonus.objects.filter(
+            statistic=statistic
+        )
+
+        mod_type_dict = {}
+        for modifier_type_id in modifier_type_ids:
+            mod_type_dict[modifier_type_id] = 0
+
+        for bonus in applicable.all():
+            for spell in bonus.spell_set:
+                if spell.id in selected_spell_ids:
+                    val = parse(bonus.bonus_value, cl_dictionary[spell.id])
+                    mod_type_dict[bonus.modifier_type_id] = max(
+                        mod_type_dict[bonus.modifier_type_id], val
+                    )
+        result[statistic.id] = sum(mod_type_dict.values())
