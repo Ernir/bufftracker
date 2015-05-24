@@ -10,16 +10,16 @@ class Source(models.Model):
         return self.name
 
 
-class Statistic(models.Model):
+class StatisticGroup(models.Model):
     name = models.CharField(max_length=100)
-    group = models.ForeignKey(StatisticGroup)
 
     def __str__(self):
         return self.name
 
 
-class StatisticGroup(models.Model):
+class Statistic(models.Model):
     name = models.CharField(max_length=100)
+    group = models.ForeignKey(StatisticGroup)
 
     def __str__(self):
         return self.name
@@ -38,7 +38,7 @@ class NumericalBonus(models.Model):
     applies_to = models.ForeignKey(Statistic)
 
     def __str__(self):
-        bonus_value = str(FORMULAS[self.bonus_value])
+        bonus_value = str(FORMULAS[self.bonus_value][1])
         modifier_type = self.modifier_type.name
         applies_to = self.applies_to.name
         return bonus_value + " " + modifier_type + " bonus to " + applies_to
@@ -57,9 +57,9 @@ class TempHPBonus(models.Model):
     other_bonus = models.IntegerField(choices=FORMULAS)
 
     def __str__(self):
-        die_number = str(FORMULAS[self.die_number])
+        die_number = str(FORMULAS[self.die_number][1])
         die_size = str(self.die_size)
-        other_bonus = str(FORMULAS[self.other_bonus])
+        other_bonus = str(FORMULAS[self.other_bonus][1])
         return die_number + "d" + die_size + " + " + other_bonus
 
 
@@ -67,9 +67,9 @@ class Spell(models.Model):
     name = models.CharField(max_length=100)
     source = models.ForeignKey(Source)
 
-    numerical_bonuses = models.ManyToManyField(NumericalBonus)
-    misc_bonuses = models.ManyToManyField(MiscBonus)
-    temp_hp_bonuses = models.ManyToManyField(TempHPBonus)
+    numerical_bonuses = models.ManyToManyField(NumericalBonus, blank=True)
+    misc_bonuses = models.ManyToManyField(MiscBonus, blank=True)
+    temp_hp_bonuses = models.ManyToManyField(TempHPBonus, blank=True)
 
     real_spell = models.BooleanField(default=True)
     varies_by_cl = models.BooleanField(default=False)
