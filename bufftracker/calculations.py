@@ -1,17 +1,4 @@
-__author__ = 'ernir'
-
-
-FORMULAS = [
-    (0, "+1"),
-    (1, "+2"),
-    (2, "+3"),
-    (3, "+4"),
-    (4, "CL"),
-    (5, "CL/2"),
-    (6, "CL/3"),
-    (7, "CL, max 10")
-]
-
+from bufftracker.models import Statistic
 
 class ScalingFunctions:
 
@@ -42,3 +29,15 @@ class ScalingFunctions:
     @staticmethod
     def one_per_three(cl):
         return cl // 3
+
+
+def get_applicable_bonuses(cl_dictionary):
+
+    result = {}
+
+    selected_spell_ids = [key for key in cl_dictionary]
+
+    statistics = Statistic.objects.all()
+
+    for statistic in statistics:
+        pass

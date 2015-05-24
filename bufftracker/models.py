@@ -1,5 +1,5 @@
 from django.db import models
-from bufftracker.calculations import FORMULAS
+from bufftracker.hardcoded_data import FORMULAS
 
 
 class Source(models.Model):
