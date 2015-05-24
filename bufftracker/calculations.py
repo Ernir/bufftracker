@@ -37,28 +37,32 @@ def parse(value_id, cl):
     return scaling_function(cl)
 
 
-def get_applicable_bonuses(cl_dictionary):
+def get_applicable_bonuses(cl_dict):
     result = {}
 
-    selected_spell_ids = [key for key in cl_dictionary]
+    selected_spell_ids = [key for key in cl_dict]
 
     statistics = Statistic.objects.all()
-    modifier_type_ids = ModifierType.objects.values("id")
 
     for statistic in statistics:
-        applicable = NumericalBonus.objects.filter(
-            statistic=statistic
-        )
+        # Getting those bonuses that actually apply to the current stat
+        applicable = NumericalBonus.objects.filter(statistic=statistic)
 
+        # The results must be broken down by modifier types.
         mod_type_dict = {}
-        for modifier_type_id in modifier_type_ids:
-            mod_type_dict[modifier_type_id] = 0
 
         for bonus in applicable.all():
             for spell in bonus.spell_set:
                 if spell.id in selected_spell_ids:
-                    val = parse(bonus.bonus_value, cl_dictionary[spell.id])
-                    mod_type_dict[bonus.modifier_type_id] = max(
-                        mod_type_dict[bonus.modifier_type_id], val
-                    )
+                    value = parse(bonus.bonus_value, cl_dict[spell.id])
+                    type_id = bonus.modifier_type.id
+                    if type_id in mod_type_dict:
+                        mod_type_dict[type_id] = max(
+                            mod_type_dict[type_id], value
+                        )
+                    else:
+                        mod_type_dict[type_id] = value
+
         result[statistic.id] = sum(mod_type_dict.values())
+
+    return result
