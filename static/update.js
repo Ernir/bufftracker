@@ -47,7 +47,7 @@ function radioButtonClicked() {
                 selectedSpellIDs.splice(position, 1);
             }
         }
-    })
+    });
     updateResults();
 }
 
@@ -65,28 +65,28 @@ function updateGlobalCL() {
  Posts an object from constructMessage to the api via AJAX, calls displayResults on success.
  */
 function updateResults() {
-    var CL = $("#caster-level").val()
+    var CL = $("#caster-level").val();
 
     var message = constructMessage(CL);
 
-    $.post("/api/bufftracker/bonuses/",
-        JSON.stringify(message),
-        function (data) {
-            if (data.status === 200) {
-                var numericalBonuses = data.content.numerical;
-                var miscBonuses = data.content.misc;
-            }
+    $.ajax({
+        url: "/behind-the-scenes/bonuses/",
+        type: "get",
+        data: message,
+
+        success: function (json) {
+            var numericalBonuses = json.content.numerical;
+            var miscBonuses = json.content.misc;
             displayResults(numericalBonuses, miscBonuses)
-        },
-        "json"
-    );
+        }
+    });
 }
 
 /*
  Returns a JS object consisting of spell IDs as keys and the CL of the respective spells as values.
  */
 function constructMessage(CL) {
-    var message = Object();
+    var message = {};
     for (var i = 0; i < selectedSpellIDs.length; i++) {
         var currentID = selectedSpellIDs[i];
         var $currentDetailedCL = $("#caster-level-" + currentID);
@@ -105,7 +105,8 @@ function constructMessage(CL) {
  */
 function displayResults(numericalBonuses, miscBonuses) {
 
-    $("#results-container").empty();
+    var $resultsContainer = $("#results-container");
+    $resultsContainer.empty();
     $.each(statisticsGroups, function (i, group) {
         $.each(group, function (j, statistics) {
             if (numericalBonuses[j] !== null && numericalBonuses[j] !== 0) {
@@ -116,6 +117,6 @@ function displayResults(numericalBonuses, miscBonuses) {
         })
     });
     for (var index = 0; index < miscBonuses.length; index++) {
-        $("#results-container").append("<span class='row'>" + miscBonuses[index] + "</span>");
+        $resultsContainer.append("<span class='row'>" + miscBonuses[index] + "</span>");
     }
 }

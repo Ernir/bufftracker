@@ -1,3 +1,4 @@
+from bufftracker.calculations import get_applicable_bonuses
 from bufftracker.models import Spell, Source, StatisticGroup
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -21,3 +22,20 @@ def get_statistics(request):
     return_dict["groups"] = groups
 
     return JsonResponse(return_dict)
+
+
+def calculate_bonuses(request):
+    if request.method == "GET":
+        cl_dict = request.GET
+        numerical_bonuses = get_applicable_bonuses(cl_dict)
+
+        content = {
+            "numerical": numerical_bonuses,
+            "misc": None
+        }
+
+        return JsonResponse({
+            "content": content,
+            "status": 200,
+            "message": "OK"
+        })
