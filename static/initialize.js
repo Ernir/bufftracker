@@ -4,20 +4,14 @@
  */
 var selectedSpellIDs;
 var statisticsGroups;
-var modifierTypes;
 
 $(function () {
-    $.getJSON("/api/bufftracker/statistics/", function (data) {
+    $.getJSON("/behind-the-scenes/statistics/", function (data) {
         if (data.status === 200) {
             statisticsGroups = data.content;
         }
     });
 
-    $.getJSON("/api/bufftracker/modifiers/", function (data) {
-        if (data.status === 200) {
-            modifierTypes = data.content;
-        }
-    });
     setListeners();
 
     selectedSpellIDs = [];

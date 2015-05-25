@@ -16,6 +16,15 @@ class StatisticGroup(models.Model):
     def __str__(self):
         return self.name
 
+    def get_as_dict(self):
+        """
+        Returns a dictionary object representing this group.
+        """
+        return {
+            "id": self.id,
+            "name": self.name
+        }
+
 
 class Statistic(models.Model):
     name = models.CharField(max_length=100)
