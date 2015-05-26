@@ -31,6 +31,10 @@ class ScalingFunctions:
     def one_per_three(cl):
         return cl // 3
 
+    @staticmethod
+    def two_plus_one_per_three_above_three_max_5(cl):
+        return min(2 + max((cl - 3) // 3,0), 5)
+
 
 def parse(value_id, cl):
     scaling_function = getattr(ScalingFunctions, CALL_MAP[value_id])
