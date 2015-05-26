@@ -22,7 +22,10 @@ class StatisticGroup(models.Model):
         """
         return {
             "id": self.id,
-            "name": self.name
+            "name": self.name,
+            "statistics": [
+                stat.get_as_dict() for stat in self.statistic_set.all()
+            ]
         }
 
 
@@ -32,6 +35,15 @@ class Statistic(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_as_dict(self):
+        """
+        Returns a dictionary object representing this statistic.
+        """
+        return {
+            "id": self.id,
+            "name": self.name
+        }
 
 
 class ModifierType(models.Model):

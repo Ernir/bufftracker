@@ -26,7 +26,12 @@ def get_statistics(request):
 
 def calculate_bonuses(request):
     if request.method == "GET":
-        cl_dict = request.GET
+        raw_cl_dict = request.GET
+
+        cl_dict = {}
+        for key, val in raw_cl_dict.dict().items():
+            cl_dict[int(key)] = int(val)
+
         numerical_bonuses = get_applicable_bonuses(cl_dict)
 
         content = {

@@ -109,15 +109,15 @@ function displayResults(numericalBonuses, miscBonuses) {
     var $resultsContainer = $("#results-container");
     $resultsContainer.empty();
     $.each(statisticsGroups, function (i, group) {
-        $.each(group, function (j, statistics) {
-            if (numericalBonuses[j] !== null && numericalBonuses[j] !== 0) {
-                // The ternary thing is to add an appropriate sign to the displayed bonus
-                var resultSpan = "<span class='row'>" + group[j] + ": " + (numericalBonuses[j] > 0 ? "+" : "") + numericalBonuses[j] + "</span>";
-                $("#results-container").append(resultSpan);
+        $.each(group.statistics, function (j, statistic) {
+            if(numericalBonuses[statistic.id]) {
+                var resultDiv = "<div>"
+                    + statistic.name
+                    + ": " + (numericalBonuses[statistic.id] > 0 ? "+" : "")
+                    + numericalBonuses[statistic.id]
+                    + "</div>";
+                $("#results-container").append(resultDiv);
             }
-        })
+        });
     });
-    for (var index = 0; index < miscBonuses.length; index++) {
-        $resultsContainer.append("<span class='row'>" + miscBonuses[index] + "</span>");
-    }
 }
