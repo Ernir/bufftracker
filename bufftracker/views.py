@@ -17,11 +17,11 @@ def index(request):
 def get_statistics(request):
 
     groups_query = StatisticGroup.objects
-    return_dict = {}
     groups = [group.get_as_dict() for group in groups_query.all()]
-    return_dict["groups"] = groups
 
-    return JsonResponse(return_dict)
+    return JsonResponse({
+        "groups": groups
+    })
 
 
 def calculate_bonuses(request):
@@ -31,11 +31,9 @@ def calculate_bonuses(request):
 
         content = {
             "numerical": numerical_bonuses,
-            "misc": None
+            "misc": []
         }
 
         return JsonResponse({
             "content": content,
-            "status": 200,
-            "message": "OK"
         })

@@ -7,9 +7,7 @@ var statisticsGroups;
 
 $(function () {
     $.getJSON("/behind-the-scenes/statistics/", function (data) {
-        if (data.status === 200) {
-            statisticsGroups = data.content;
-        }
+        statisticsGroups = data.groups;
     });
 
     setListeners();
