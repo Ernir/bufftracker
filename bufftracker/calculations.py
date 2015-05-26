@@ -50,13 +50,13 @@ def get_applicable_bonuses(cl_dict):
 
     for statistic in statistics:
         # Getting those bonuses that actually apply to the current stat
-        applicable = NumericalBonus.objects.filter(statistic=statistic)
+        applicable = NumericalBonus.objects.filter(applies_to=statistic)
 
         # The results must be broken down by modifier types.
         mod_type_dict = {}
 
         for bonus in applicable.all():
-            for spell in bonus.spell_set:
+            for spell in bonus.spell_set.all():
                 if spell.id in selected_spell_ids:
                     value = parse(bonus.bonus_value, cl_dict[spell.id])
                     type_id = bonus.modifier_type.id

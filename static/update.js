@@ -39,7 +39,8 @@ function radioButtonClicked() {
     }
 
     var clickedElement = this;
-    $.each($("input[type=radio]"), function (index, element) {
+    var $radioButtons = $("input[type=radio]");
+    $.each($radioButtons, function (index, element) {
         if (element.id !== clickedElement.id) {
             var spellToRemove = parseInt(element.id.replace("spell-", ""));
             var position = selectedSpellIDs.indexOf(spellToRemove);
