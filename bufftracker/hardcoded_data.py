@@ -7,7 +7,8 @@ FORMULAS = [
     (5, "CL/2"),
     (6, "CL/3"),
     (7, "CL, max 10"),
-    (8, "2 + CL/3, max 5")
+    (8, "2 + CL/3, max 5"),
+    (9, "+25")
 ]
 
 CALL_MAP = {
@@ -19,5 +20,6 @@ CALL_MAP = {
     5: "one_per_two",
     6: "one_per_three",
     7: "equal_max_10",
-    8: "two_plus_one_per_three_above_three_max_5"
+    8: "two_plus_one_per_three_above_three_max_5",
+    9: "twenty_five"
 }
