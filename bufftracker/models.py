@@ -28,6 +28,9 @@ class StatisticGroup(models.Model):
             ]
         }
 
+    class Meta:
+        ordering = ("name", )
+
 
 class Statistic(models.Model):
     name = models.CharField(max_length=100)
@@ -45,12 +48,18 @@ class Statistic(models.Model):
             "name": self.name
         }
 
+    class Meta:
+        ordering = ("group__name", "name")
+
 
 class ModifierType(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ("name", )
 
 
 class NumericalBonus(models.Model):
@@ -70,6 +79,9 @@ class MiscBonus(models.Model):
 
     def __str__(self):
         return self.description
+
+    class Meta:
+        ordering = ("description", )
 
 
 class TempHPBonus(models.Model):
@@ -98,3 +110,6 @@ class Spell(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ("name",)
