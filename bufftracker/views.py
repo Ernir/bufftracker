@@ -1,4 +1,4 @@
-from bufftracker.calculations import get_applicable_bonuses
+from bufftracker.calculations import get_applicable_bonuses, get_misc_bonuses
 from bufftracker.models import Spell, Source, StatisticGroup
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -33,10 +33,11 @@ def calculate_bonuses(request):
             cl_dict[int(key)] = int(val)
 
         numerical_bonuses = get_applicable_bonuses(cl_dict)
+        misc_bonuses = get_misc_bonuses(cl_dict)
 
         content = {
             "numerical": numerical_bonuses,
-            "misc": []
+            "misc": misc_bonuses
         }
 
         return JsonResponse({

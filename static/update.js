@@ -116,8 +116,11 @@ function displayResults(numericalBonuses, miscBonuses) {
                     + ": " + (numericalBonuses[statistic.id] > 0 ? "+" : "")
                     + numericalBonuses[statistic.id]
                     + "</div>";
-                $("#results-container").append(resultDiv);
+                $resultsContainer.append(resultDiv);
             }
         });
     });
+    $.each(miscBonuses, function(i, bonus) {
+        $resultsContainer.append("<div>" + bonus + "</div>")
+    })
 }

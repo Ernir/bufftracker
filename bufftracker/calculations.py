@@ -1,5 +1,5 @@
 from bufftracker.hardcoded_data import CALL_MAP
-from bufftracker.models import Statistic, NumericalBonus, ModifierType
+from bufftracker.models import Statistic, NumericalBonus, MiscBonus
 
 
 class ScalingFunctions:
@@ -33,7 +33,7 @@ class ScalingFunctions:
 
     @staticmethod
     def two_plus_one_per_three_above_three_max_5(cl):
-        return min(2 + max((cl - 3) // 3,0), 5)
+        return min(2 + max((cl - 3) // 3, 0), 5)
 
 
 def parse(value_id, cl):
@@ -42,6 +42,16 @@ def parse(value_id, cl):
 
 
 def get_applicable_bonuses(cl_dict):
+    """
+
+    Calculates the total bonuses given by all selected spells, accounting for
+    stacking rules.
+
+    :param cl_dict: A dictionary with selected spell IDs as keys,
+    and the CLs of each spell as values.
+    :return: A dictionary with statistic IDs as keys,
+    and the calculated bonuses as values.
+    """
     result = {}
 
     selected_spell_ids = [key for key in cl_dict]
@@ -70,3 +80,26 @@ def get_applicable_bonuses(cl_dict):
         result[statistic.id] = sum(mod_type_dict.values())
 
     return result
+
+
+def get_misc_bonuses(cl_dict):
+    """
+
+    Lists the total non-numerical bonuses given by all selected spells.
+
+    :param cl_dict: A dictionary with selected spell IDs as keys,
+    and the CLs of each spell as values.
+    :return: A list of the descriptions of the spells' non-numerical bonuses.
+
+    """
+
+    result = set()  # Set guarantees uniqueness.
+
+    selected_spell_ids = [key for key in cl_dict]
+
+    bonuses = MiscBonus.objects.filter(spell__in=selected_spell_ids)
+
+    for bonus in bonuses.all():
+        result.add(bonus.description)
+
+    return list(result)
