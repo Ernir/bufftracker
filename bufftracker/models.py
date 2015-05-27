@@ -67,11 +67,20 @@ class NumericalBonus(models.Model):
     modifier_type = models.ForeignKey(ModifierType)
     applies_to = models.ForeignKey(Statistic)
 
+    formula = models.CharField(max_length=200)
+
     def __str__(self):
         bonus_value = str(FORMULAS[self.bonus_value][1])
         modifier_type = self.modifier_type.name
         applies_to = self.applies_to.name
         return bonus_value + " " + modifier_type + " bonus to " + applies_to
+
+    def save(self, *args, **kwargs):
+        super(NumericalBonus, self).save(*args, **kwargs)
+        self.formula = str(self)
+
+    class Meta:
+        ordering = ("formula", "bonus_value")
 
 
 class MiscBonus(models.Model):
@@ -107,6 +116,8 @@ class Spell(models.Model):
     real_spell = models.BooleanField(default=True)
     varies_by_cl = models.BooleanField(default=False)
     size_modifying = models.BooleanField(default=False)
+
+    additional_note = models.CharField(max_length=200, blank=True, default="")
 
     def __str__(self):
         return self.name
