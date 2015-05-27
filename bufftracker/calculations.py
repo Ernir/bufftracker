@@ -39,6 +39,17 @@ class ScalingFunctions:
     def twenty_five(cl):
         return 25
 
+    @staticmethod
+    def one_per_three_min_1_max_3(cl):
+        return max(1, min(cl // 3, 3))
+
+    @staticmethod
+    def minus_two(cl):
+        return -2
+
+    @staticmethod
+    def minus_one(cl):
+        return -1
 
 def parse(value_id, cl):
     scaling_function = getattr(ScalingFunctions, CALL_MAP[value_id])
