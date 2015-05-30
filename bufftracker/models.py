@@ -1,5 +1,5 @@
 from django.db import models
-from bufftracker.hardcoded_data import FORMULAS
+from bufftracker.hardcoded_data import CasterLevelFormula
 
 
 class Source(models.Model):
@@ -62,27 +62,6 @@ class ModifierType(models.Model):
         ordering = ("name", )
 
 
-class NumericalBonus(models.Model):
-    bonus_value = models.IntegerField(choices=FORMULAS)
-    modifier_type = models.ForeignKey(ModifierType)
-    applies_to = models.ForeignKey(Statistic)
-
-    formula = models.CharField(max_length=200)
-
-    def __str__(self):
-        bonus_value = str(FORMULAS[self.bonus_value][1])
-        modifier_type = self.modifier_type.name
-        applies_to = self.applies_to.name
-        return bonus_value + " " + modifier_type + " bonus to " + applies_to
-
-    def save(self, *args, **kwargs):
-        super(NumericalBonus, self).save(*args, **kwargs)
-        self.formula = str(self)
-
-    class Meta:
-        ordering = ("formula", "bonus_value")
-
-
 class MiscBonus(models.Model):
     description = models.CharField(max_length=200)
 
@@ -92,16 +71,51 @@ class MiscBonus(models.Model):
     class Meta:
         ordering = ("description", )
 
-
-class TempHPBonus(models.Model):
-    die_number = models.IntegerField(choices=FORMULAS)
-    die_size = models.IntegerField(default=0)
-    other_bonus = models.IntegerField(choices=FORMULAS)
+class NumericalBonus(models.Model):
+    bonus_formula = models.ForeignKey(CasterLevelFormula, null=True)
+    modifier_type = models.ForeignKey(ModifierType)
+    applies_to = models.ForeignKey(Statistic)
 
     def __str__(self):
-        die_number = str(FORMULAS[self.die_number][1])
+        if self.bonus_formula:
+            bonus_value = self.bonus_formula.displayed_formula
+        else:
+            bonus_value = ""
+        modifier_type = self.modifier_type.name
+        applies_to = self.applies_to.name
+        return bonus_value + " " + modifier_type + " bonus to " + applies_to
+
+    def save(self, *args, **kwargs):
+        super(NumericalBonus, self).save(*args, **kwargs)
+        self.formula = str(self)
+
+    class Meta:
+        ordering = ("bonus_formula__displayed_formula", )
+
+
+class TempHPBonus(models.Model):
+    die_number_formula = models.ForeignKey(
+        CasterLevelFormula,
+        related_name="die_number",
+        null=True
+    )
+    die_size = models.IntegerField(default=0)
+    other_bonus_formula = models.ForeignKey(
+        CasterLevelFormula,
+        related_name="other_bonus",
+        null=True
+    )
+
+    def __str__(self):
+        if self.die_number_formula:
+            die_number = self.die_number_formula.displayed_formula
+        else:
+            die_number = ""
         die_size = str(self.die_size)
-        other_bonus = str(FORMULAS[self.other_bonus][1])
+        if self.other_bonus_formula:
+            other_bonus = self.other_bonus_formula.displayed_formula
+        else:
+            other_bonus = ""
         return die_number + "d" + die_size + " + " + other_bonus
 
 
