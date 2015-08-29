@@ -12,7 +12,7 @@
             {% for spell in spell_list %}
                 {% if spell.source_id == source.id %}
                     {% if not spell.size_modifying %}
-                        <div class="checkbox">
+                        <div class="checkbox control-container">
                             {% if spell.varies_by_cl %}
                                 <label>
                                     <input type="checkbox"
@@ -32,7 +32,7 @@
                             {% endif %}
                         </div>
                     {% else %}
-                        <div class="radio">
+                        <div class="radio control-container">
                             {% if spell.varies_by_cl %}
                                 <label>
                                     <input type="radio" name="size"

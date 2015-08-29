@@ -10,3 +10,12 @@ body {
 h2 {
     text-transform: uppercase;
 }
+
+.control-container {
+    height: 26px;
+}
+
+.control-container > label {
+    display: inline-block;
+    width: 200px;
+}
